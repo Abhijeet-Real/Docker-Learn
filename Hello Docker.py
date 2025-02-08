@@ -87,15 +87,36 @@ def generate_disaster_data(n, region_countries):
     disaster_severities = np.random.choice(["Minor", "Moderate", "Severe", "Catastrophic"], n, p=[0.4, 0.3, 0.2, 0.1])
     international_reliefs = [get_international_relief(region, country, gdp, severity) for region, country, gdp, severity in zip(regions, countries, gdp_per_capitas, disaster_severities)]
     
+
+    def get_female_and_children_affected(region, severity):
+        base_rate = {
+            "North America": 0.1,
+            "Europe": 0.1,
+            "Australia": 0.1,
+            "Asia": 0.4,
+            "South America": 0.4,
+            "Africa": 0.5
+        }
+        severity_factor = {"Minor": 1, "Moderate": 1.5, "Severe": 2, "Catastrophic": 3}
+        affected = base_rate[region] * severity_factor[severity] * 100  # Convert to percentage
+        affected = affected if affected <= 75 else 75
+        affected = affected if affected >= 55 else 55
+        affected += random.uniform(-5.00, 5.00)
+        return round(affected, 2)
+
+    female_and_children = [get_female_and_children_affected(region, severity) for region, severity in zip(regions, disaster_severities)]
+
+
     data = {
+        "S.no": np.arange(1, n + 1),
         "Date": dates,
+        "Season": [get_season(date.month, region) for date, region in zip(dates, regions)],
         "Region": regions,
         "Country": countries,
-        "GDP Per Capita ($)": gdp_per_capitas,
-        "Population Density (people per sq. km)": population_densities,
         "Economic Damage (Million $)": economic_damages,
         "Disaster Severity": disaster_severities,
-        "International Relief Received ($ Million)": international_reliefs
+        "International Relief Received ($ Million)": international_reliefs,
+        "% of Female and Children Affected": female_and_children
     }
     return pd.DataFrame(data)
 
