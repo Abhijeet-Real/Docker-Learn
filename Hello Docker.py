@@ -20,18 +20,6 @@ def get_season(month, region):
     else:
         return southern_hemisphere.get(month, "Unknown")
 
-# Function to compute democracy score based on region
-def get_democracy_score(region):
-    democracy_scores = {
-        "North America": np.random.randint(7, 10),
-        "Europe": np.random.randint(6, 9),
-        "Asia": np.random.randint(3, 7),
-        "South America": np.random.randint(4, 7),
-        "Africa": np.random.randint(2, 6),
-        "Australia": np.random.randint(7, 10)
-    }
-    return democracy_scores.get(region, 5)
-
 # Country-to-country relations matrix (realistic diplomatic ties)
 relations_matrix = {
     "USA": {"Canada": 1.5, "UK": 1.4, "Germany": 1.3, "India": 1.2, "China": 0.7},
@@ -45,7 +33,7 @@ relations_matrix = {
 
 # Function to compute international relations score between countries
 def get_relation_score(donor, recipient):
-    return relations_matrix.get(donor, {}).get(recipient, 1.0)
+    return np.exp(-relations_matrix.get(donor, {}).get(recipient, 1.0))  # Exponential negative impact
 
 # Function to get GDP per capita for each region
 def get_gdp_per_capita(region):
@@ -78,12 +66,12 @@ def get_economic_damage(region, base_damage):
     return int(base_damage * gdp_factor * pop_density_factor)
 
 # Function to compute international relief received
-def get_international_relief(region, country, democracy_score, gdp_per_capita, disaster_severity):
+def get_international_relief(region, country, gdp_per_capita, disaster_severity):
     base_relief = np.random.randint(5, 15)
     severity_factor = {"Minor": 1, "Moderate": 2, "Severe": 3, "Catastrophic": 5}
     donor = random.choice(list(relations_matrix.keys()))
     relation_score = get_relation_score(donor, country)
-    relief = base_relief * democracy_score * (1 / (gdp_per_capita / 10000)) * severity_factor[disaster_severity] * relation_score
+    relief = base_relief * (1 / (gdp_per_capita / 10000)) * severity_factor[disaster_severity] * relation_score
     return round(relief, 2)
 
 # Function to generate dataset
@@ -92,19 +80,17 @@ def generate_disaster_data(n, region_countries):
     regions = np.random.choice(list(region_countries.keys()), n)
     countries = [random.choice(region_countries[region]) for region in regions]
     dates = generate_dates("2000-01-01", "2025-01-01", n)
-    democracy_scores = [get_democracy_score(region) for region in regions]
     gdp_per_capitas = [get_gdp_per_capita(region) for region in regions]
     population_densities = [get_population_density(region) for region in regions]
     base_economic_damages = np.random.gamma(shape=2, scale=500, size=n).astype(int)
     economic_damages = [get_economic_damage(region, damage) for region, damage in zip(regions, base_economic_damages)]
     disaster_severities = np.random.choice(["Minor", "Moderate", "Severe", "Catastrophic"], n, p=[0.4, 0.3, 0.2, 0.1])
-    international_reliefs = [get_international_relief(region, country, democracy, gdp, severity) for region, country, democracy, gdp, severity in zip(regions, countries, democracy_scores, gdp_per_capitas, disaster_severities)]
+    international_reliefs = [get_international_relief(region, country, gdp, severity) for region, country, gdp, severity in zip(regions, countries, gdp_per_capitas, disaster_severities)]
     
     data = {
         "Date": dates,
         "Region": regions,
         "Country": countries,
-        "Democracy Score": democracy_scores,
         "GDP Per Capita ($)": gdp_per_capitas,
         "Population Density (people per sq. km)": population_densities,
         "Economic Damage (Million $)": economic_damages,
