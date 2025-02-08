@@ -22,14 +22,30 @@ def get_season(month, region):
 
 # Country-to-country relations matrix (realistic diplomatic ties)
 relations_matrix = {
-    "USA": {"Canada": 1.5, "UK": 1.4, "Germany": 1.3, "India": 1.2, "China": 0.7},
-    "UK": {"USA": 1.4, "France": 1.3, "India": 1.1, "Germany": 1.4},
-    "Germany": {"France": 1.3, "UK": 1.4, "USA": 1.3},
-    "France": {"Germany": 1.3, "UK": 1.3, "Canada": 1.2},
-    "China": {"Pakistan": 1.5, "Russia": 1.4, "India": 0.6, "USA": 0.7},
-    "India": {"USA": 1.2, "UK": 1.1, "China": 0.6},
-    "Australia": {"New Zealand": 1.5, "USA": 1.3, "UK": 1.2}
+    "USA": {"Canada": 1.5, "UK": 1.4, "Germany": 1.3, "India": 0.4, "China": 0.2, "Mexico": 0.2, "Brazil": 0.2, "Australia": 1.3},
+    "Canada": {"USA": 1.5, "UK": 1.3, "France": 1.2, "Germany": 1.1, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "India": 0.4, "China": 0.2, "Japan": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "Mexico": {"USA": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Canada": 0.2, "UK": 1.0, "France": 1.0, "Germany": 1.0, "Chile": 0.2, "India": 0.4, "China": 0.2, "Japan": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "Brazil": {"Argentina": 0.2, "Chile": 0.2, "Mexico": 0.2, "USA": 0.2, "Canada": 0.2, "UK": 1.0, "France": 1.0, "Germany": 1.0, "India": 0.4, "China": 0.2, "Japan": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "Argentina": {"Brazil": 0.2, "Chile": 0.2, "Mexico": 0.2, "USA": 0.2, "Canada": 0.2, "UK": 1.0, "France": 1.0, "Germany": 1.0, "India": 0.4, "China": 0.2, "Japan": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "Chile": {"Brazil": 0.2, "Argentina": 0.2, "Mexico": 0.2, "USA": 0.2, "Canada": 0.2, "UK": 1.0, "France": 1.0, "Germany": 1.0, "India": 0.4, "China": 0.2, "Japan": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "UK": {"USA": 1.4, "France": 1.3, "India": 0.4, "Germany": 1.4, "Canada": 1.3, "Australia": 1.2, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "China": 0.2, "Japan": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "Germany": {"France": 1.3, "UK": 1.4, "USA": 1.3, "Canada": 1.1, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "India": 0.4, "China": 0.2, "Japan": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "France": {"Germany": 1.3, "UK": 1.3, "Canada": 1.2, "USA": 1.2, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "India": 0.4, "China": 0.2, "Japan": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "China": {"Pakistan": 1.5, "Russia": 1.4, "India": 0.4, "USA": 0.2, "Japan": 0.8, "Canada": 0.2, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "UK": 0.2, "France": 1.0, "Germany": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "India": {"USA": 0.4, "UK": 0.4, "China": 0.4, "Japan": 0.4, "Canada": 0.4, "Mexico": 0.4, "Brazil": 0.4, "Argentina": 0.4, "Chile": 0.4, "France": 0.4, "Germany": 0.4, "Australia": 0.4, "New Zealand": 0.4, "South Africa": 0.4, "Nigeria": 0.4, "Kenya": 0.4},
+    "Japan": {"China": 0.8, "India": 0.4, "USA": 1.1, "Canada": 1.0, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "UK": 0.2, "France": 1.0, "Germany": 1.0, "Australia": 1.0, "New Zealand": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "Australia": {"New Zealand": 1.5, "USA": 1.3, "UK": 1.2, "Canada": 1.0, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "France": 1.0, "Germany": 1.0, "India": 0.4, "China": 0.2, "Japan": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "New Zealand": {"Australia": 1.5, "USA": 1.0, "UK": 1.0, "Canada": 1.0, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "France": 1.0, "Germany": 1.0, "India": 0.4, "China": 0.2, "Japan": 1.0, "South Africa": 0.2, "Nigeria": 0.2, "Kenya": 0.2},
+    "South Africa": {"Nigeria": 0.2, "Kenya": 0.2, "USA": 0.2, "Canada": 0.2, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "UK": 0.2, "France": 0.2, "Germany": 0.2, "India": 0.4, "China": 0.2, "Japan": 0.2, "Australia": 0.2, "New Zealand": 0.2},
+    "Nigeria": {"South Africa": 0.2, "Kenya": 0.2, "USA": 0.2, "Canada": 0.2, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "UK": 0.2, "France": 0.2, "Germany": 0.2, "India": 0.4, "China": 0.2, "Japan": 0.2, "Australia": 0.2, "New Zealand": 0.2},
+    "Kenya": {"South Africa": 0.2, "Nigeria": 0.2, "USA": 0.2, "Canada": 0.2, "Mexico": 0.2, "Brazil": 0.2, "Argentina": 0.2, "Chile": 0.2, "UK": 0.2, "France": 0.2, "Germany": 0.2, "India": 0.4, "China": 0.2, "Japan": 0.2, "Australia": 0.2, "New Zealand": 0.2}
 }
+
+# Randomly decrease each value by 0.1 or leave it as it is
+for country, relations in relations_matrix.items():
+    for related_country in relations:
+        if random.choice([True, False]):
+            relations[related_country] = round(relations[related_country] - 0.1, 1)
 
 # Function to compute international relations score between countries
 def get_relation_score(donor, recipient):
