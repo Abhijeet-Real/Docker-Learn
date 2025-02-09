@@ -1,0 +1,16 @@
+# Ignore virtual environment
+.venv/
+
+# Ignore dataset files
+natural_disaster_dataset.csv
+
+# Ignore Git-related files
+.git/
+.gitignore
+
+# Ignore cache and unnecessary files
+__pycache__/
+*.pyc
+*.pyo
+*.log
+.DS_Store
