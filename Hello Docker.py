@@ -138,6 +138,7 @@ def generate_disaster_data(n, region_countries):
 
 region_countries = {"North America": ["USA", "Canada", "Mexico"], "South America": ["Brazil", "Argentina", "Chile"], "Europe": ["Germany", "France", "UK"], "Africa": ["South Africa", "Nigeria", "Kenya"], "Asia": ["India", "China", "Japan"], "Australia": ["Australia", "New Zealand"]}
 df = generate_disaster_data(10000, region_countries)
-df.to_csv("natural_disasters_dataset.csv", index=False)
+df.to_csv("/app/output/natural_disasters_dataset.csv", index=False)
 print("Dataset Summary:")
 print(df.describe())
+
