@@ -1,20 +1,26 @@
-# Use Python 3.9.13 as the base image
-FROM python:3.9.13
+# Use a lightweight Python image (reduces size significantly)
+FROM python:3.9.13-slim AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the project files into the container
-COPY . /app
+# Copy only the dependencies file (requirements.txt) to the container
+COPY requirements.txt .
 
-# Create a virtual environment inside the container
-RUN python -m venv .venv
+# Install dependencies in a temporary layer to keep the final image smaller
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Activate the virtual environment and install dependencies
-RUN .venv/bin/pip install --upgrade pip && .venv/bin/pip install -r requirements.txt
+# Use another lightweight Python image for the final container
+FROM python:3.9.13-slim
 
-# Ensure the virtual environment is used when running the container
-ENV PATH="/app/.venv/bin:$PATH"
+# Set the working directory inside the final container
+WORKDIR /app
 
-# Run the Python script inside the virtual environment
+# Copy the installed dependencies from the builder stage to the final image
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+
+# Copy the rest of the project files into the final container
+COPY . .
+
+# Specify the command to run when the container starts
 CMD ["python", "Hello Docker.py"]
